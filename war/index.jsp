@@ -1,4 +1,4 @@
-<%@ page import="com.google.appengine.api.blobstore.*,com.google.appengine.api.images.*,com.google.appengine.labs.repackaged.com.google.common.collect.Lists,java.util.List" %>
+<%@ page import="java.util.List,java.util.ArrayList" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 <!DOCTYPE html>
@@ -35,10 +35,10 @@
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
             <li>
-            <a href="#">Login/Logout</a>
+            <a href="/loginlogout">Login/Logout</a>
             </li>
             <li>
-            <a href="/picturebox">Upload</a>
+            <a href="/upload.jsp">Upload</a>
             </li>
         </ul>
     </div>
@@ -50,20 +50,14 @@
     <div class="row">
         <div class="col-md-12">
             <div id="links">
-                <%
-                    String fileURL;
-                    // iterator to store queried blob info
-                    List<BlobInfo> filesList = Lists.newArrayList(new BlobInfoFactory().queryBlobInfos());
-                    ImagesService imagesService = ImagesServiceFactory.getImagesService();
-                    // loop through files information returned from query
+                    <% 
+                    ArrayList<String> blobNames =(ArrayList<String>) request.getAttribute("blobNames"); 
+                    ArrayList<String> fileURLs =(ArrayList<String>) request.getAttribute("fileURLs"); 
 
-                    for(int i = 0; i < filesList.size(); i++) {
-                        
-                        fileURL = imagesService.getServingUrl(filesList.get(i).getBlobKey());
-                        %>
+                    for(int i = 0; i < blobNames.size(); i++) {%>
 
-                        <a href="<%=fileURL%>" title="<%=filesList.get(i).getFilename()%>" data-gallery>
-                            <img src="<%=fileURL%>=s75-c" alt="<%=filesList.get(i).getFilename()%>">
+                        <a href="<%=fileURLs.get(i)%>=s0" title="<%=blobNames.get(i)%>" data-gallery>
+                            <img src="<%=fileURLs.get(i)%>=s75-c" alt="<%=blobNames.get(i)%>">
                         </a>
 
                     <% } %>

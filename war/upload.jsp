@@ -50,7 +50,7 @@
       onSubmit="if(document.getElementById('input-24').value == '') return false;" enctype="multipart/form-data">
         <div class="form-group">
           <div class="form-group">
-            <input id="input-24" type="file" multiple="false" name="myFile">
+            <input id="input-24" type="file" name="myFile" multiple>
             </div>
             </div>
           </div>
@@ -62,6 +62,7 @@
 <script>
 $("#input-24").fileinput({
   maxFileSize: 32000,
+  maxFileCount: 10,
   allowedFileExtensions: ['jpg', 'gif', 'png'],
 });
 </script>
