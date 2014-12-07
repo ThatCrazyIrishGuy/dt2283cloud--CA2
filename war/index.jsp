@@ -1,6 +1,5 @@
-<%@ page import="java.util.List,java.util.ArrayList" %>
+<%@ page import="com.google.appengine.labs.repackaged.com.google.common.collect.ArrayListMultimap,com.google.appengine.labs.repackaged.com.google.common.collect.Multimap,java.util.Set,java.util.Iterator,com.google.appengine.api.users.UserService,com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +14,7 @@
 <!-- Custom CSS -->
 <link href="css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-<link rel="stylesheet" href="css/bootstrap-image-gallery.css">
+<link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -29,17 +28,28 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         </button>
-        <a class="navbar-brand" href="#">Picture Box</a>
+        <a class="navbar-brand" href="/getblobs">Picture Box</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+        <% UserService userService = UserServiceFactory.getUserService(); %>
         <ul class="nav navbar-nav">
             <li>
             <a href="/loginlogout">Login/Logout</a>
             </li>
-            <li>
-            <a href="/upload.jsp">Upload</a>
-            </li>
+            <% if(userService.isUserLoggedIn()){ %>
+                <li>
+                <a href="/upload.jsp">Upload</a>
+                </li>
+                <li>
+                <a href="/getuserblobs">My Images</a>
+                </li>
+                <% if(userService.isUserAdmin()){ %>
+                    <li>
+                    <a href="/getadminblobs">Admin Panel</a>
+                    </li>
+                <%}%>
+            <%}%>
         </ul>
     </div>
     <!-- /.navbar-collapse -->
@@ -49,65 +59,75 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <div id="links">
-                    <% 
-                    ArrayList<String> blobNames =(ArrayList<String>) request.getAttribute("blobNames"); 
-                    ArrayList<String> fileURLs =(ArrayList<String>) request.getAttribute("fileURLs"); 
-
-                    for(int i = 0; i < blobNames.size(); i++) {%>
-
-                        <a href="<%=fileURLs.get(i)%>=s0" title="<%=blobNames.get(i)%>" data-gallery>
-                            <img src="<%=fileURLs.get(i)%>=s75-c" alt="<%=blobNames.get(i)%>">
-                        </a>
-
-                    <% } %>
-            </div>
-            <div id="blueimp-gallery" class="blueimp-gallery">
-                <div class="slides">
-                </div>
-                <h3 class="title"></h3>
-                <a class="prev">‹</a>
-                <a class="next">›</a>
-                <a class="close">×</a>
-                <a class="play-pause"></a>
-                <ol class="indicator">
-                </ol>
-                <div class="modal fade">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" aria-hidden="true">&times;</button>
-                                <h4 class="modal-title"></h4>
-                            </div>
-                            <div class="modal-body next">
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default pull-left prev">
-                                <i class="glyphicon glyphicon-chevron-left"></i>
-                                Previous </button>
-                                <button type="button" class="btn btn-primary next">
-                                Next <i class="glyphicon glyphicon-chevron-right"></i>
-                                </button>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="links">
+                        <%
+                        Multimap<String, String> picInfoMap = (Multimap<String, String>) request.getAttribute("picInfoMap");
+                        String url;
+                        String filename;
+                        Iterator<String> values;
+                        Set<String> keys = picInfoMap.keySet();
+                        for(String key : keys)
+                        { 
+                            values = picInfoMap.get(key).iterator();
+                            filename = values.next();
+                            url = values.next();
+                            %>
+                            <a href="<%=url%>=s0" title="<%=filename%>" data-gallery>
+                                <img src="<%=url%>=s75-c" alt="<%=filename%>">
+                            </a>
+                      <%}%>
+                    </div>
+                    <div id="blueimp-gallery" class="blueimp-gallery">
+                        <!-- The container for the modal slides -->
+                        <div class="slides"></div>
+                        <!-- Controls for the borderless lightbox -->
+                        <h3 class="title"></h3>
+                        <a class="prev">‹</a>
+                        <a class="next">›</a>
+                        <a class="close">×</a>
+                        <a class="play-pause"></a>
+                        <ol class="indicator"></ol>
+                        <!-- The modal dialog, which will be used to wrap the lightbox content -->
+                        <div class="modal fade">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" aria-hidden="true">&times;</button>
+                                        <h4 class="modal-title"></h4>
+                                    </div>
+                                    <div class="modal-body next"></div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default pull-left prev">
+                                            <i class="glyphicon glyphicon-chevron-left"></i>
+                                            Previous
+                                        </button>
+                                        <button type="button" class="btn btn-primary next">
+                                            Next
+                                            <i class="glyphicon glyphicon-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <hr>
+            <!-- Footer -->
+            <footer>
+            <div class="row">
+                <div class="col-lg-12">
+                    <p>
+                         Copyright &copy; Darren Britton 2014
+                    </p>
+                </div>
+            </div>
+            <!-- /.row -->
+            </footer>
         </div>
     </div>
-    <hr>
-    <!-- Footer -->
-    <footer>
-    <div class="row">
-        <div class="col-lg-12">
-            <p>
-                Copyright &copy; Darren Britton 2014
-            </p>
-        </div>
-    </div>
-    <!-- /.row -->
-    </footer>
-
 </div>
 <!-- /.container -->
 <!-- jQuery -->

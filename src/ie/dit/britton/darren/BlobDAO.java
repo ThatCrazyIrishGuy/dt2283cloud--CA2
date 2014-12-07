@@ -1,193 +1,154 @@
 package ie.dit.britton.darren;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.appengine.api.blobstore.BlobKey;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.EntityNotFoundException;
+import com.google.appengine.api.datastore.Query.Filter;
+import com.google.appengine.api.datastore.Query.FilterPredicate;
+import com.google.appengine.api.datastore.Query.FilterOperator;
+import com.google.appengine.api.datastore.Query;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
-import com.google.appengine.api.utils.SystemProperty;
 
 public class BlobDAO {
-	
-	String url;
-	
-	public BlobDAO()
-	{
-		url = null;
-	    try {
-	      if (SystemProperty.environment.value() ==
-	          SystemProperty.Environment.Value.Production) {
-	        // Load the class that provides the new "jdbc:google:mysql://" prefix.
-	        Class.forName("com.mysql.jdbc.GoogleDriver");
-	        url = "jdbc:google:mysql://ieditbrittondarrenpicturebox:picinfo?user=root";
-	      } else {
-	        // Local MySQL instance to use during development.
-	        Class.forName("com.mysql.jdbc.Driver");
-	        url = "jdbc:mysql://127.0.0.1:3306/pictureinfo?user=root";
-	
-	        // Alternatively, connect to a Google Cloud SQL instance using:
-	        // jdbc:mysql://ip-address-of-google-cloud-sql-instance:3306/pictureinfo?user=root
-	      }
-	    } catch (Exception e) {
-	      e.printStackTrace();
-	    }
-	}
-	
-	public void uploadInfo(List<BlobKey> blobKey)
-	{
-	
-	    try {
-	      Connection conn = DriverManager.getConnection(url);
-	      try {
-    		  UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
-    		  String name = userService.getCurrentUser().getNickname();
-    		  Integer isPublic = (userService.isUserAdmin()) ? 1: 0;
-    		  
-    		  for (BlobKey key : blobKey)
-    		  {
-    	          String statement = "INSERT INTO pictureinfo.picinfo (blobKey, uploaderName, public) VALUES( ? , ? , ? )";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          stmt.setString(1, key.getKeyString());
-    	          stmt.setString(2, name);
-    	          stmt.setInt(3, isPublic);
-    	          stmt.executeUpdate();
-    		  }
-	        }
-	      finally {
-	        conn.close();
-	      }
-	    } catch (SQLException e) {
-		      e.printStackTrace();
-		      return;
-	    }
-	 }
-	
-	public List<String> getUserBlobs()
-	{
-		ArrayList<String> blobs = new ArrayList<String>();
-		
-	    try {
-		      Connection conn = DriverManager.getConnection(url);
-		      try {
-	    		  UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
-	    		  String name = userService.getCurrentUser().getNickname();
 
-    	          String statement = "SELECT blobKey FROM pictureinfo.picinfo WHERE uploaderName = ? ";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          stmt.setString(1, name);
-    	          ResultSet rs = stmt.executeQuery();
-    	          
-    	          while(rs.next())
-    	          {
-    	        	  blobs.add(rs.getString("blobKey"));
-    	          }
-    	          
-		        }
-		      finally {
-		        conn.close();
-		      }
-		    } catch (SQLException e) {
-			      e.printStackTrace();
-		    }
+	DatastoreService datastore;
+
+	public BlobDAO() {
+		datastore = DatastoreServiceFactory.getDatastoreService();
+	}
+
+	public void uploadInfo(List < BlobKey > blobKey) {
+		UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
+		String name = userService.getCurrentUser().getNickname();
+		boolean isPublic = userService.isUserAdmin();
+
+		Entity picInfo;
+
+		for (BlobKey key: blobKey) {
+			picInfo = new Entity("picinfo", key.getKeyString());
+			picInfo.setProperty("uploader", name);
+			picInfo.setProperty("public", isPublic);
+			datastore.put(picInfo);
+		}
+	}
+
+	public List < String > getUserBlobs() {
+		ArrayList < String > blobs = new ArrayList < String > ();
+
+		UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
+		String uploader = userService.getCurrentUser().getNickname();
+
+		String blobKey = "";
+
+		Filter nameFilter = new FilterPredicate("uploader",
+		FilterOperator.EQUAL,
+		uploader);
+
+
+		// Use class Query to assemble a query
+		Query q = new Query("picinfo").setFilter(nameFilter);
+
+		// Use PreparedQuery interface to retrieve results
+		PreparedQuery pq = datastore.prepare(q);
+
+
+		for (Entity result: pq.asIterable()) {
+			blobKey = result.getKey().getName();
+			blobs.add(blobKey);
+		}
+
+
 		return blobs;
 	}
-	
-	public List<String> getPublicBlobs()
-	{
-		ArrayList<String> blobs = new ArrayList<String>();
-		
-	    try {
-		      Connection conn = DriverManager.getConnection(url);
-		      try {
 
-    	          String statement = "SELECT blobKey FROM pictureinfo.picinfo WHERE public = 1 ";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          ResultSet rs = stmt.executeQuery();
-    	          
-    	          while(rs.next())
-    	          {
-    	        	  blobs.add(rs.getString("blobKey"));
-    	          }
-    	          
-		        }
-		      finally {
-		        conn.close();
-		      }
-		    } catch (SQLException e) {
-			      e.printStackTrace();
-		    }
+	public List < String > getPublicBlobs() {
+		ArrayList < String > blobs = new ArrayList < String > ();
+
+		String blobKey = "";
+
+		Filter visibilityFilter = new FilterPredicate("public",
+		FilterOperator.EQUAL,
+		true);
+
+
+		// Use class Query to assemble a query
+		Query q = new Query("picinfo").setFilter(visibilityFilter);
+
+		// Use PreparedQuery interface to retrieve results
+		PreparedQuery pq = datastore.prepare(q);
+
+
+		for (Entity result: pq.asIterable()) {
+			blobKey = result.getKey().getName();
+			blobs.add(blobKey);
+		}
+
+
 		return blobs;
 	}
-	
-	public List<String> getAllBlobs()
-	{
-		ArrayList<String> blobs = new ArrayList<String>();
-		
-	    try {
-		      Connection conn = DriverManager.getConnection(url);
-		      try {
 
-    	          String statement = "SELECT blobKey FROM pictureinfo.picinfo";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          ResultSet rs = stmt.executeQuery();
-    	          
-    	          while(rs.next())
-    	          {
-    	        	  blobs.add(rs.getString("blobKey"));
-    	          }
-    	          
-		        }
-		      finally {
-		        conn.close();
-		      }
-		    } catch (SQLException e) {
-			      e.printStackTrace();
-		    }
+	public List < String > getAllBlobs() {
+		ArrayList < String > blobs = new ArrayList < String > ();
+
+		String blobKey = "";
+
+		Query q = new Query("picinfo");
+
+		// Use PreparedQuery interface to retrieve results
+		PreparedQuery pq = datastore.prepare(q);
+
+		for (Entity result: pq.asIterable()) {
+			blobKey = result.getKey().getName();
+			blobs.add(blobKey);
+		}
+
+
 		return blobs;
 	}
-	
-	public void deleteBlob(String blobKey)
-	{		
-	    try {
-		      Connection conn = DriverManager.getConnection(url);
-		      try {
 
-    	          String statement = "DELETE FROM pictureinfo.picinfo WHERE blobKey = ?";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          stmt.setString(1, blobKey);
-    	          stmt.executeUpdate();        
-		        }
-		      finally {
-		        conn.close();
-		      }
-		    } catch (SQLException e) {
-			      e.printStackTrace();
-		    }
+	public void deleteBlob(String blobKey) {
+		Key key = KeyFactory.createKey("picinfo", blobKey);
+		datastore.delete(key);
 	}
-	
-	public void updateBlobVisibility(Integer isPublic, String blobKey)
-	{		
-	    try {
-		      Connection conn = DriverManager.getConnection(url);
-		      try {
 
-    	          String statement = "UPDATE pictureinfo.picinfo SET isPublic = ? WHERE blobKey = ?";
-    	          PreparedStatement stmt = conn.prepareStatement(statement);
-    	          stmt.setInt(1, isPublic);
-    	          stmt.setString(2, blobKey);
-    	          stmt.executeUpdate();        
-		        }
-		      finally {
-		        conn.close();
-		      }
-		    } catch (SQLException e) {
-			      e.printStackTrace();
-		    }
+	public String getBlobVisibility(String blobKey) {
+		Entity entity;
+
+		try {
+			entity = datastore.get(KeyFactory.createKey("picinfo", blobKey));
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "error";
+		}
+
+		return (boolean) entity.getProperty("public") ? "Private" : "Public";
+	}
+
+	public void updateBlobVisibility(String blobKey) {
+		Entity entity;
+
+		try {
+			entity = datastore.get(KeyFactory.createKey("picinfo", blobKey));
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
+
+		boolean isPublic = (boolean) entity.getProperty("public");
+
+		entity.setProperty("public", !isPublic);
+
+		datastore.put(entity);
 	}
 }

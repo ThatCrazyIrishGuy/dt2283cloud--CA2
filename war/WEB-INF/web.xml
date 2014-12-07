@@ -12,7 +12,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>LoginLogout</servlet-name>
 		<url-pattern>/loginlogout</url-pattern>
 	</servlet-mapping>
-		<servlet>
+	<servlet>
 		<servlet-name>GetBlobs</servlet-name>
 		<servlet-class>ie.dit.britton.darren.GetBlobs</servlet-class>
 	</servlet>
@@ -20,6 +20,74 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 		<servlet-name>GetBlobs</servlet-name>
 		<url-pattern>/getblobs</url-pattern>
 	</servlet-mapping>
+	<servlet>
+		<servlet-name>GetUserBlobs</servlet-name>
+		<servlet-class>ie.dit.britton.darren.GetUserBlobs</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetUserBlobs</servlet-name>
+		<url-pattern>/getuserblobs</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>GetUserBlobs</web-resource-name>
+            <url-pattern>/getuserblobs</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+   	<servlet>
+		<servlet-name>UpdateVisibility</servlet-name>
+		<servlet-class>ie.dit.britton.darren.UpdateVisibility</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>UpdateVisibility</servlet-name>
+		<url-pattern>/updatevisibility</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>UpdateVisibility</web-resource-name>
+            <url-pattern>/updatevisibility</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <servlet>
+		<servlet-name>DeleteBlob</servlet-name>
+		<servlet-class>ie.dit.britton.darren.DeleteBlob</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>DeleteBlob</servlet-name>
+		<url-pattern>/deleteblob</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>DeleteBlob</web-resource-name>
+            <url-pattern>/deleteblob</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>*</role-name>
+        </auth-constraint>
+    </security-constraint>
+    <servlet>
+		<servlet-name>GetAdminBlobs</servlet-name>
+		<servlet-class>ie.dit.britton.darren.GetAdminBlobs</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>GetAdminBlobs</servlet-name>
+		<url-pattern>/getadminblobs</url-pattern>
+	</servlet-mapping>
+	<security-constraint>
+        <web-resource-collection>
+            <web-resource-name>GetAdminBlobs</web-resource-name>
+            <url-pattern>/getadminblobs</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>admin</role-name>
+        </auth-constraint>
+    </security-constraint>
 	<servlet>
 		<servlet-name>Upload</servlet-name>
 		<servlet-class>ie.dit.britton.darren.Upload</servlet-class>
@@ -37,14 +105,6 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
             <role-name>*</role-name>
         </auth-constraint>
     </security-constraint>
-	<servlet>
-		<servlet-name>Serve</servlet-name>
-		<servlet-class>ie.dit.britton.darren.Serve</servlet-class>
-	</servlet>
-	<servlet-mapping>
-		<servlet-name>Serve</servlet-name>
-		<url-pattern>/serve</url-pattern>
-	</servlet-mapping>
 	<welcome-file-list>
 		<welcome-file>getblobs</welcome-file>
 	</welcome-file-list>
