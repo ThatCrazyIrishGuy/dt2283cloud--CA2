@@ -1,4 +1,4 @@
-package ie.dit.britton.darren;
+package ie.dit.britton.darren.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,11 @@ import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+/** 
+* BlobDAO.java - provides methods for writing and reading picinfo entities to the datastore. 
+* @author  Darren Britton
+* @see DatastoreService
+*/
 public class BlobDAO {
 
 	DatastoreService datastore;
@@ -25,7 +30,11 @@ public class BlobDAO {
 	public BlobDAO() {
 		datastore = DatastoreServiceFactory.getDatastoreService();
 	}
-
+	
+	/** 
+    * Puts picinfo into the datastore for provided blobKey. 
+    * @param blobKey A list of BlobKeys. 
+    */ 
 	public void uploadInfo(List < BlobKey > blobKey) {
 		UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
 		String name = userService.getCurrentUser().getNickname();
@@ -40,7 +49,11 @@ public class BlobDAO {
 			datastore.put(picInfo);
 		}
 	}
-
+	
+	/** 
+    * Retrieves a list of all the current users blob keys as Strings. 
+    * @return A List of Strings. 
+    */ 
 	public List < String > getUserBlobs() {
 		ArrayList < String > blobs = new ArrayList < String > ();
 
@@ -69,7 +82,11 @@ public class BlobDAO {
 
 		return blobs;
 	}
-
+	
+	/** 
+    * Retrieves a list of all the blob keys, as Strings, marked public in the datastore. 
+    * @return A List of Strings. 
+    */ 
 	public List < String > getPublicBlobs() {
 		ArrayList < String > blobs = new ArrayList < String > ();
 
@@ -95,7 +112,11 @@ public class BlobDAO {
 
 		return blobs;
 	}
-
+	
+	/** 
+    * Retrieves a list of all blob keys as Strings. 
+    * @return A List of Strings. 
+    */ 
 	public List < String > getAllBlobs() {
 		ArrayList < String > blobs = new ArrayList < String > ();
 
@@ -114,12 +135,21 @@ public class BlobDAO {
 
 		return blobs;
 	}
-
+	
+	/** 
+    * deletes the picinfo entity associated with a given BlobKey String. 
+    * @param blobKey a BlobKey as String. 
+    */ 
 	public void deleteBlob(String blobKey) {
 		Key key = KeyFactory.createKey("picinfo", blobKey);
 		datastore.delete(key);
 	}
-
+	
+	/** 
+    * gets the visibility of the picinfo entity associated with a given BlobKey String. 
+    * @param blobKey a BlobKey as String. 
+    * @return String of value "Private" or "Public". 
+    */ 
 	public String getBlobVisibility(String blobKey) {
 		Entity entity;
 
@@ -133,7 +163,30 @@ public class BlobDAO {
 
 		return (boolean) entity.getProperty("public") ? "Private" : "Public";
 	}
+	
+	/** 
+    * gets the uploader a given BlobKey String. 
+    * @param blobKey a BlobKey as String. 
+    * @return String of uploaders nickname. 
+    */ 
+	public String getBlobOwner(String blobKey) {
+		Entity entity;
 
+		try {
+			entity = datastore.get(KeyFactory.createKey("picinfo", blobKey));
+		} catch (EntityNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "error";
+		}
+
+		return (String) entity.getProperty("uploader");
+	}
+	
+	/** 
+    * inverts the visibility of the picinfo entity associated with a given BlobKey String. 
+    * @param blobKey a BlobKey as String. 
+    */ 
 	public void updateBlobVisibility(String blobKey) {
 		Entity entity;
 

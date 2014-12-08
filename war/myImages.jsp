@@ -61,9 +61,11 @@
         <div class="col-md-12">
             <% 
             Multimap<String, String> picInfoMap = (Multimap<String, String>) request.getAttribute("picInfoMap");
+            String returnTo = (String) request.getAttribute("baseServlet");
             String url;
             Iterator<String> values;
             Set<String> keys = picInfoMap.keySet();
+            String previousKey= "";
             for(String key : keys)
             {
                 values = picInfoMap.get(key).iterator();
@@ -87,15 +89,18 @@
                             Options <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu" role="menu">
-                                <li class="list-group-item-warning"><a href="/updatevisibility?blobKey=<%=key%>">Make <%=values.next()%></a></li>
+                                <li class="list-group-item-warning"><a href="/updatevisibility?blobKey=<%=key%>&returnTo=<%=returnTo%>">Make <%=values.next()%></a></li>
                                 <li class="divider"></li>
-                                <li class="list-group-item-danger"><a href="/deleteblob?blobKey=<%=key%>">Delete</a></li>
+                                <li class="list-group-item-danger"><a href="/deleteblob?blobKey=<%=key%>&returnTo=<%=returnTo%>&previousKey=<%=previousKey%>">Delete</a></li>
                             </ul>
                         </div>
                     </div>
                 </div>
                 <hr>
-           <%}%>
+           <%
+           previousKey= key;
+            }
+           %>
             <!-- Footer -->
             <footer>
             <div class="row">

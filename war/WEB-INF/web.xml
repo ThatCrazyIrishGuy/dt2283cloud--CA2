@@ -6,7 +6,7 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
 http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	<servlet>
 		<servlet-name>LoginLogout</servlet-name>
-		<servlet-class>ie.dit.britton.darren.LoginLogout</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.LoginLogout</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>LoginLogout</servlet-name>
@@ -14,7 +14,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>GetBlobs</servlet-name>
-		<servlet-class>ie.dit.britton.darren.GetBlobs</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.GetBlobs</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GetBlobs</servlet-name>
@@ -22,7 +22,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
 	</servlet-mapping>
 	<servlet>
 		<servlet-name>GetUserBlobs</servlet-name>
-		<servlet-class>ie.dit.britton.darren.GetUserBlobs</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.GetUserBlobs</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GetUserBlobs</servlet-name>
@@ -39,7 +39,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </security-constraint>
    	<servlet>
 		<servlet-name>UpdateVisibility</servlet-name>
-		<servlet-class>ie.dit.britton.darren.UpdateVisibility</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.UpdateVisibility</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>UpdateVisibility</servlet-name>
@@ -56,7 +56,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </security-constraint>
     <servlet>
 		<servlet-name>DeleteBlob</servlet-name>
-		<servlet-class>ie.dit.britton.darren.DeleteBlob</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.DeleteBlob</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>DeleteBlob</servlet-name>
@@ -73,7 +73,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </security-constraint>
     <servlet>
 		<servlet-name>GetAdminBlobs</servlet-name>
-		<servlet-class>ie.dit.britton.darren.GetAdminBlobs</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.GetAdminBlobs</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>GetAdminBlobs</servlet-name>
@@ -90,7 +90,7 @@ http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
     </security-constraint>
 	<servlet>
 		<servlet-name>Upload</servlet-name>
-		<servlet-class>ie.dit.britton.darren.Upload</servlet-class>
+		<servlet-class>ie.dit.britton.darren.servlet.Upload</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>Upload</servlet-name>

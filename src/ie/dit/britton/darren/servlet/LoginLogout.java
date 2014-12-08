@@ -1,13 +1,23 @@
-package ie.dit.britton.darren;
+package ie.dit.britton.darren.servlet;
 
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.servlet.http.*;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
+/** 
+* LoginLogout.java - a servlet that logs the user in if logged out and logs them out
+* if they are logged in. 
+* @author  Darren Britton
+* @see HttpServlet
+* @See Principle
+* @see UserService
+*/
 @SuppressWarnings("serial")
 public class LoginLogout extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)

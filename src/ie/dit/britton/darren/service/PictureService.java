@@ -1,6 +1,10 @@
-package ie.dit.britton.darren;
+package ie.dit.britton.darren.service;
+
+import ie.dit.britton.darren.dao.BlobDAO;
 
 import java.util.ArrayList;
+
+import javax.servlet.http.HttpServlet;
 
 import com.google.appengine.api.blobstore.BlobInfo;
 import com.google.appengine.api.blobstore.BlobInfoFactory;
@@ -11,6 +15,13 @@ import com.google.appengine.api.images.ServingUrlOptions;
 import com.google.appengine.labs.repackaged.com.google.common.collect.ArrayListMultimap;
 import com.google.appengine.labs.repackaged.com.google.common.collect.Multimap;
 
+/** 
+* PictureService.java - Encapsulates the retrevial of picinfo properties from the datastore. 
+* @author  Darren Britton
+* @see HttpServlet
+* @See BlobDAO
+* @see ImageService
+*/
 public class PictureService {
 
 	private Multimap < String, String > picInfoMap;
@@ -37,7 +48,11 @@ public class PictureService {
 
 		imagesService = ImagesServiceFactory.getImagesService();
 	}
-
+	
+	/** 
+    * Gets the filename and serving url for the loaded blobKeys. 
+    * @return Multimap<String,String> containing the filename and serving url indexed by the BlobKey as a String. 
+    */ 
 	public Multimap < String, String > getCoreInfo() {
 		for (int i = 0; i < blobList.size(); i++) {
 			//resp.getWriter().println("blobs recieved =" + blobList.size() + "\n blobkey =" + blobList.get(i));
@@ -52,7 +67,13 @@ public class PictureService {
 
 		return picInfoMap;
 	}
-
+	
+	/** 
+    * Gets the full file info for the loaded blobKeys. 
+    * @return Multimap<String,String> containing
+    * the serving url, filename, creation date, file type, file size and its visibility 
+    * indexed by the BlobKey as a String. 
+    */ 
 	public Multimap < String, String > getFullInfo() {
 		for (int i = 0; i < blobList.size(); i++) {
 			//resp.getWriter().println("blobs recieved =" + blobList.size() + "\n blobkey =" + blobList.get(i));

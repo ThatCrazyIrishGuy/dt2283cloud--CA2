@@ -1,4 +1,7 @@
-package ie.dit.britton.darren;
+package ie.dit.britton.darren.servlet;
+
+import ie.dit.britton.darren.dao.BlobDAO;
+import ie.dit.britton.darren.service.PictureService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +16,14 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.labs.repackaged.com.google.common.collect.Multimap;
 
+/** 
+* GetBlobs.java - a servlet that handles getting getting blobs based on if the user is logged in
+* or not and passing them to myImages.jsp as a Multimap. 
+* @author  Darren Britton
+* @See BlobDAO
+* @see HttpServlet
+* @see Multimap
+*/
 @SuppressWarnings("serial")
 public class GetBlobs extends HttpServlet {
 	public void doGet(HttpServletRequest req, HttpServletResponse resp)
