@@ -38,7 +38,7 @@ public class BlobDAO {
 	public void uploadInfo(List < BlobKey > blobKey) {
 		UserService userService = UserServiceFactory.getUserService(); //gets instance of user service instance
 		String name = userService.getCurrentUser().getNickname();
-		boolean isPublic = userService.isUserAdmin();
+		boolean isPublic = !userService.isUserAdmin();
 
 		Entity picInfo;
 

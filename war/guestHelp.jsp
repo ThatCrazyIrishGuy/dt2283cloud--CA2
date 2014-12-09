@@ -1,4 +1,4 @@
-<%@ page import="com.google.appengine.labs.repackaged.com.google.common.collect.ArrayListMultimap,com.google.appengine.labs.repackaged.com.google.common.collect.Multimap,java.util.Set,java.util.Iterator,com.google.appengine.api.users.UserService,com.google.appengine.api.users.UserServiceFactory" %>
+<%@ page import="com.google.appengine.api.users.UserService,com.google.appengine.api.users.UserServiceFactory" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Image Hosting via Google App Engine">
 <meta name="author" content="Darren Britton">
-<title>Picture Box - My Images</title>
+<title>Picture Box - Guest Help</title>
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 <!-- Custom CSS -->
@@ -70,54 +70,33 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <% 
-            Multimap<String, String> picInfoMap = (Multimap<String, String>) request.getAttribute("picInfoMap");
-            String returnTo = (String) request.getAttribute("baseServlet");
-            String url;
-            Iterator<String> values;
-            Set<String> keys = picInfoMap.keySet();
-            for(String key : keys)
-            {
-                values = picInfoMap.get(key).iterator();
-                url = values.next(); %>
-                <div class="row">
-                    <div class="col-md-7">
-                        <a href="<%=url%>=s0"> <center><img class="img-responsive well" src="<%=url%>=s700" alt="<%=url%>"></center>
-                        </a>
-                    </div>
-                    <div class="col-md-5">
-                        <h3><%=values.next()%></h3>
-                        <h4>Uploaded on: <%=values.next()%></h4>
-                        <p>
-                            File Type: <%=values.next()%>
-                        </p>
-                        <p>
-                            File Size: <%=values.next()%> KBytes
-                        </p>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            Options <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu">
-                                <li class="list-group-item-warning"><a href="/updatevisibility?blobKey=<%=key%>&returnTo=<%=returnTo%>">Make <%=values.next()%></a></li>
-                                <li class="divider"></li>
-                                <li class="list-group-item-danger"><a href="/deleteblob?blobKey=<%=key%>&returnTo=<%=returnTo%>">Delete</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <hr>
-           <%}%>
-            <!-- Footer -->
-            <footer>
-            <div class="row">
-                <div class="col-lg-12">
-                    <p>
-                         Copyright &copy; Darren Britton 2014
-                    </p>
-                </div>
+          <div class="jumbotron">
+              <h1>Hello, Guest!</h1>
+              <p>This help page is here to assist you in using Picture Box as a guest.
+                Guest functionality is limited, So we encourage you to login with your Google account
+                to make use of Picture Box</p>
+              <p><a class="btn btn-primary btn-lg" href="/loginlogout" role="button">Login Here</a></p>
             </div>
-            <!-- /.row -->
+            <div class="panel panel-primary">
+              <div class="panel-heading">
+                <h3 class="panel-title">Viewing Public Images</h3>
+              </div>
+              <div class="panel-body">
+                As a guest user, you may only view images which have been made public.
+                These public images are available on the landing page or by clicking on "Picture Box"
+                in the navigation bar at the top of the page. 
+              </div>
+             </div>
+             <div class="alert alert-warning" role="alert">To get any aditional functionality you must <a href="/loginlogout" class="alert-link">login!</a></div>
+              <!-- Footer -->
+            <footer>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>
+                             Copyright &copy; Darren Britton 2014
+                        </p>
+                    </div>
+                </div>
             </footer>
         </div>
         <!-- /.container -->

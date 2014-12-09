@@ -1,0 +1,17 @@
+body {
+    padding-top: 70px;
+}
+
+#bg {
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+	
+  /* Preserve aspet ratio */
+  min-width: 100%;
+  min-height: 100%;
+}
+
+h2 {
+	color: white !important;
+}

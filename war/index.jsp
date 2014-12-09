@@ -14,7 +14,7 @@
 <!-- Custom CSS -->
 <link href="css/style.css" rel="stylesheet">
 <link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-<link rel="stylesheet" href="css/bootstrap-image-gallery.min.css">
+<link rel="stylesheet" href="css/bootstrap-image-gallery.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -22,7 +22,7 @@
 <div class="container">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#pb-navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -31,13 +31,13 @@
         <a class="navbar-brand" href="/getblobs">Picture Box</a>
     </div>
     <!-- Collect the nav links, forms, and other content for toggling -->
-    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+    <div class="collapse navbar-collapse" id="pb-navbar-collapse">
         <% UserService userService = UserServiceFactory.getUserService(); %>
         <ul class="nav navbar-nav">
-            <li>
-            <a href="/loginlogout">Login/Logout</a>
-            </li>
             <% if(userService.isUserLoggedIn()){ %>
+                <li>
+                <a href="/loginlogout">Logout</a>
+                </li>
                 <li>
                 <a href="/upload.jsp">Upload</a>
                 </li>
@@ -48,7 +48,20 @@
                     <li>
                     <a href="/getadminblobs">Admin Panel</a>
                     </li>
-                <%}%>
+                    <li>
+                    <a href="/adminHelp.jsp">Help</a>
+                    </li>
+                <%} else {%>
+                    <li>
+                    <a href="/userHelp.jsp">Help</a>
+                    </li>
+            <%}} else {%>
+                <li>
+                <a href="/loginlogout">Login</a>
+                </li>
+                <li>
+                <a href="/guestHelp.jsp">Help</a>
+                </li>
             <%}%>
         </ul>
     </div>
