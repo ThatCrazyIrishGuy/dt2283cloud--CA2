@@ -12,7 +12,7 @@
 <!-- Latest compiled and minified CSS -->
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
 <!-- Custom CSS -->
-<link href="css/style.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <!-- Navigation -->
@@ -62,6 +62,11 @@
                 </li>
             <%}%>
         </ul>
+        <form class="navbar-form navbar-left" role="search">
+            <div class="form-group">
+                <input class="form-control" id="search" name="search" placeholder="Search" type="text" data-toggle="hideseek" data-list=".picture_list" data-nodata="No results found" autocomplete="off">
+            </div>
+      </form>
     </div>
     <!-- /.navbar-collapse -->
 </div>
@@ -70,7 +75,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <% 
+         <ul class="picture_list" id="unstyled">
+            <%
             Multimap<String, String> picInfoMap = (Multimap<String, String>) request.getAttribute("picInfoMap");
             String returnTo = (String) request.getAttribute("baseServlet");
             String url;
@@ -85,6 +91,7 @@
                         <a href="<%=url%>=s0"> <center><img class="img-responsive well" src="<%=url%>=s700" alt="<%=url%>"></center>
                         </a>
                     </div>
+                    <li>
                     <div class="col-md-5">
                         <h3><%=values.next()%></h3>
                         <h4>Uploaded on: <%=values.next()%></h4>
@@ -105,9 +112,11 @@
                             </ul>
                         </div>
                     </div>
+                 </li>
                 </div>
-                <hr>
            <%}%>
+           <hr>
+        </ul>
             <!-- Footer -->
             <footer>
             <div class="row">
@@ -125,5 +134,14 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <!-- Bootstrap Core JavaScript -->
         <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+        <!-- JS -->
+        <script type="text/javascript" src="js/vendor/waypoints.min.js"></script>
+        <script type="text/javascript" src="js/vendor/waypoints-sticky.min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.hideseek.min.js"></script>
+        <script type="text/javascript" src="js/vendor/rainbow-custom.min.js"></script>
+        <script type="text/javascript" src="js/vendor/jquery.anchor.js"></script>
+        <script src="js/initializers.js"></script>
+        <!-- JS ends -->
+
         </body>
         </html>

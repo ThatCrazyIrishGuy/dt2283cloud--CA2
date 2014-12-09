@@ -15,3 +15,5 @@ body {
 h2 {
 	color: white !important;
 }
+
+ul#unstyled,ul#unstyled li { list-style:none !important;}
