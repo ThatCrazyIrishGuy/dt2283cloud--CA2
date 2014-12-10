@@ -16,40 +16,47 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.labs.repackaged.com.google.common.collect.Multimap;
 
-/** 
-* GetBlobs.java - a servlet that handles getting getting blobs based on if the user is logged in
-* or not and passing them to myImages.jsp as a Multimap. 
-* @author  Darren Britton
-* @See BlobDAO
-* @see HttpServlet
-* @see Multimap
-*/
+/**
+ * GetBlobs.java - a servlet that handles getting getting blobs based on if the user is logged in or not and passing them to myImages.jsp as a Multimap.
+ * 
+ * @author Darren Britton
+ * @See BlobDAO
+ * @see HttpServlet
+ * @see Multimap
+ */
 @SuppressWarnings("serial")
-public class GetBlobs extends HttpServlet {
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-	throws IOException {
+public class GetBlobs extends HttpServlet
+{
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
+	{
 
 		UserService userService = UserServiceFactory.getUserService();
 
 		BlobDAO blobDAO = new BlobDAO();
 		PictureService pictureService;
 
-		if (userService.isUserLoggedIn()) {
-			pictureService = new PictureService((ArrayList < String > ) blobDAO.getAllBlobs());
-		} else {
-			pictureService = new PictureService((ArrayList < String > ) blobDAO.getPublicBlobs());
+		if (userService.isUserLoggedIn())
+		{
+			pictureService = new PictureService((ArrayList<String>) blobDAO.getAllBlobs());
+			// gets all images (public and private) for logged in users
+		} else
+		{
+			pictureService = new PictureService((ArrayList<String>) blobDAO.getPublicBlobs());
+			// gets only public images for guest users
 
 		}
 
-		Multimap < String, String > picInfoMap = pictureService.getCoreInfo();
+		Multimap<String, String> picInfoMap = pictureService.getCoreInfo(); // gets only the base info (used for the landing page)
 
 		req.setAttribute("picInfoMap", picInfoMap);
 
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/index.jsp");
-		try {
+		try
+		{
 			dispatcher.forward(req, resp);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (ServletException e)
+		{
 			e.printStackTrace();
 		}
 	}

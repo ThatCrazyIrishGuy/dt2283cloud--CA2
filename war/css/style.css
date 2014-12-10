@@ -16,4 +16,11 @@ h2 {
 	color: white !important;
 }
 
-ul#unstyled,ul#unstyled li { list-style:none !important;}
+ul#unstyled,ul#unstyled li
+{ 
+	list-style:none !important;
+}
+
+.clearfix {
+	margin-bottom: 50px !important;
+}

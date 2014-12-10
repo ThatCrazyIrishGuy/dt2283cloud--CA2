@@ -92,7 +92,7 @@
                         </a>
                     </div>
                     <li>
-                    <div class="col-md-5">
+                    <div class="col-md-5 clearfix">
                         <h3><%=values.next()%></h3>
                         <h4>Uploaded on: <%=values.next()%></h4>
                         <p>

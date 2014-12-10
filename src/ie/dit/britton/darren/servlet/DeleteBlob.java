@@ -14,28 +14,29 @@ import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
-/** 
-* DeleteBlob.java - a servlet that handles deleting a blob from the blobstore
-* and its associated picinfo entity from the datastore. 
-* @author  Darren Britton
-* @see HttpServlet
-*/
+/**
+ * DeleteBlob.java - a servlet that handles deleting a blob from the blobstore and its associated picinfo entity from the datastore.
+ * 
+ * @author Darren Britton
+ * @see HttpServlet
+ */
 @SuppressWarnings("serial")
-public class DeleteBlob extends HttpServlet {
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-	throws IOException {
+public class DeleteBlob extends HttpServlet
+{
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
+	{
 		BlobDAO blobDAO = new BlobDAO();
 		UserService userService = UserServiceFactory.getUserService();
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
-		
+
 		String key = (String) req.getParameter("blobKey");
-		String returnTo = (String) req.getParameter("returnTo");
-		BlobKey blobKey = new BlobKey(key);
-		
-		if(blobDAO.getBlobOwner(key).equals(String.valueOf(userService.getCurrentUser())) || userService.isUserAdmin())
-		{
-			blobstoreService.delete(blobKey);
-			blobDAO.deleteBlob(key);
+		String returnTo = (String) req.getParameter("returnTo"); // includes the servlet url to return back through
+		BlobKey blobKey = new BlobKey(key); // converts blobkey string to BlobKey object
+
+		if (blobDAO.getBlobOwner(key).equals(String.valueOf(userService.getCurrentUser())) || userService.isUserAdmin())
+		{ // check to see if the user uploaded the image or is an admin
+			blobstoreService.delete(blobKey); // deletes blob from blobstore
+			blobDAO.deleteBlob(key); // deletes picinfo entity associated with blob from datastore
 		}
 
 		resp.sendRedirect("/" + returnTo);

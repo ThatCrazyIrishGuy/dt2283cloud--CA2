@@ -14,32 +14,36 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.appengine.labs.repackaged.com.google.common.collect.Multimap;
 
-/** 
-* GetAdminBlobs.java - a servlet that handles getting the administrator blobs
-* and passing them to myImages.jsp as a Multimap. 
-* @author  Darren Britton
-* @see BlobDAO
-* @see HttpServlet
-* @see Multimap
-*/
+/**
+ * GetAdminBlobs.java - a servlet that handles getting the administrator blobs and passing them to myImages.jsp as a Multimap.
+ * 
+ * @author Darren Britton
+ * @see BlobDAO
+ * @see HttpServlet
+ * @see Multimap
+ */
 @SuppressWarnings("serial")
-public class GetAdminBlobs extends HttpServlet {
-	public void doGet(HttpServletRequest req, HttpServletResponse resp)
-	throws IOException {
+public class GetAdminBlobs extends HttpServlet
+{
+	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
+	{
 
 		BlobDAO blobDAO = new BlobDAO();
-		PictureService pictureService = new PictureService((ArrayList < String > ) blobDAO.getAllBlobs());
-		Multimap < String, String > picInfoMap = pictureService.getFullInfo();
+		PictureService pictureService = new PictureService((ArrayList<String>) blobDAO.getAllBlobs()); // adds all keys to picture service instance
+		Multimap<String, String> picInfoMap = pictureService.getFullInfo();
 
 		req.setAttribute("picInfoMap", picInfoMap);
 		req.setAttribute("baseServlet", "getadminblobs");
-	
+
 		RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/myImages.jsp");
-		
-		try {
+		// forwarding allows us to send the attached attributes without need a session
+
+		try
+		{
 			dispatcher.forward(req, resp);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
+		}
+		catch (ServletException e)
+		{
 			e.printStackTrace();
 		}
 	}

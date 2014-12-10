@@ -15,29 +15,34 @@ import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
 
-/** 
-* Upload.java - Servlet that that encapsulates the uploding of provided images to blobstore
-* and adding associated info to the datastore via BlobDAO. 
-* @author  Darren Britton
-* @see HttpServlet
-* @See BlobDAO
-*/
-public class Upload extends HttpServlet {
+/**
+ * Upload.java - Servlet that that encapsulates the uploding of provided images to blobstore and adding associated info to the datastore via BlobDAO.
+ * 
+ * @author Darren Britton
+ * @see HttpServlet
+ * @See BlobDAO
+ */
+public class Upload extends HttpServlet
+{
 
 	private static final long serialVersionUID = 1L;
-	private BlobDAO blobDAO;
-	private BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
-	public void doPost(HttpServletRequest req, HttpServletResponse res)
-	throws ServletException, IOException {
-		Map < String, List < BlobKey >> blobs = blobstoreService.getUploads(req);
-		List < BlobKey > blobKey = blobs.get("myFile");
-		if (blobKey == null) {
+	public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	{
+		BlobDAO blobDAO;
+		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
+
+		Map<String, List<BlobKey>> blobs = blobstoreService.getUploads(req);// gets all the images from the http multipart request
+		List<BlobKey> blobKey = blobs.get("myFile"); // gets the blobkeys for "myFile"
+		if (blobKey == null)
+		{ //front end ensures this cannot be null, just an extra precaution
 			res.sendRedirect("/");
-		} else {
+		}
+		else
+		{
 			blobDAO = new BlobDAO();
-			blobDAO.uploadInfo(blobKey);
-			res.sendRedirect("/getblobs");
+			blobDAO.uploadInfo(blobKey); // creates the entities for list of blobkeys
+			res.sendRedirect("/getblobs"); // redirects to landing page
 		}
 	}
 }
