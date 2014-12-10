@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServletResponse;
 import com.google.appengine.api.blobstore.BlobKey;
 import com.google.appengine.api.blobstore.BlobstoreService;
 import com.google.appengine.api.blobstore.BlobstoreServiceFactory;
+import com.google.appengine.api.images.ImagesService;
+import com.google.appengine.api.images.ImagesServiceFactory;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -26,6 +28,7 @@ public class DeleteBlob extends HttpServlet
 	public void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
 		BlobDAO blobDAO = new BlobDAO();
+		ImagesService imagesService = ImagesServiceFactory.getImagesService();
 		UserService userService = UserServiceFactory.getUserService();
 		BlobstoreService blobstoreService = BlobstoreServiceFactory.getBlobstoreService();
 
@@ -36,6 +39,7 @@ public class DeleteBlob extends HttpServlet
 		if (blobDAO.getBlobOwner(key).equals(String.valueOf(userService.getCurrentUser())) || userService.isUserAdmin())
 		{ // check to see if the user uploaded the image or is an admin
 			blobstoreService.delete(blobKey); // deletes blob from blobstore
+			imagesService.deleteServingUrl(blobKey); //removes static serving url for image
 			blobDAO.deleteBlob(key); // deletes picinfo entity associated with blob from datastore
 		}
 
